@@ -43,7 +43,7 @@
 
 #include "web_video_server/web_video_server.h"
 #include "web_video_server/jpeg_streamers.h"
-#include "web_video_server/libav_streamer.h"
+#include "web_video_server/vp8_streamer.h"
 #include "web_video_server/http_server/http_reply.hpp"
 
 namespace web_video_server
@@ -76,7 +76,8 @@ WebVideoServer::WebVideoServer(ros::NodeHandle& nh, ros::NodeHandle& private_nh)
   private_nh.param("ros_threads", ros_threads_, 2);
 
   stream_types_["mjpeg"] = boost::shared_ptr<ImageStreamerType>(new MjpegStreamerType());
-  stream_types_["vp8"] = boost::shared_ptr<ImageStreamerType>(new LibavStreamerType("webm", "libvpx", "video/webm"));
+  stream_types_["vp8"] = boost::shared_ptr<ImageStreamerType>(new Vp8StreamerType());
+  stream_types_["h264"] = boost::shared_ptr<ImageStreamerType>(new LibavStreamerType("mp4", "libx264", "video/mp4"));
 
   handler_group_.addHandlerForPath("/", boost::bind(&WebVideoServer::handle_list_streams, this, _1, _2));
   handler_group_.addHandlerForPath("/stream", boost::bind(&WebVideoServer::handle_stream, this, _1, _2));
